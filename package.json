@@ -1,0 +1,19 @@
+{
+  "name": "abndk-personal-budget",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "api",
+    "codecademy",
+    "back-end-engineer-path"
+  ],
+  "author": "abnDK",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
