@@ -50,6 +50,24 @@ const addToDB = (model, data) => {
 
 }
 
+const updateEnvelope = (updatedEnvelope, envelopeId) => {
+    let targetEnvelope = envelopes.find(env => env.id === envelopeId);
+    if (targetEnvelope) {
+        if (typeof updatedEnvelope.category === 'string') {
+            targetEnvelope.category = updatedEnvelope.category;
+        }
+        if (!Number.isNaN(Number(updatedEnvelope.balance))) {
+            targetEnvelope.balance = updatedEnvelope.balance;
+        }
+        if (typeof updatedEnvelope.description === 'string') {
+            targetEnvelope.description = updatedEnvelope.description;
+        }
+        return targetEnvelope;
+    } else {
+        return null
+    }
+}
+
 const addExpense = (amount, envelopeId) => {
     let envelope = getFromDBById('envelopes', envelopeId);
     if (envelope) {
@@ -74,6 +92,7 @@ module.exports = {
     getAllFromDB,
     addToDB,
     getFromDBById,
-    addExpense
+    addExpense,
+    updateEnvelope
 }
 

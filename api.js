@@ -1,5 +1,5 @@
 const express = require('express');
-const {getAllFromDB, addToDB, getFromDBById, addExpense} = require('./db');
+const {getAllFromDB, addToDB, getFromDBById, addExpense, updateEnvelope} = require('./db');
 const apiRouter = express.Router();
 
 
@@ -71,16 +71,13 @@ envelopesRouter.get('/:envelopeId', (req, res, next) => {
 
 // PUT and GET route to add expense / withdraw from envelope balance.
 envelopesRouter.put('/:envelopeId', (req, res, next) => {
-    const expenseAmount = Number(req.body.amount);
-    if (Number.isInteger(expenseAmount)) {
-        const envelope = addExpense(expenseAmount, req.envelopeId);
-        if (envelope) {
-            res.status(200).send(envelope);
-        } else {
-            res.status(400).send(`Could not find envelope with id ${req.envelopeId}`)
-        }
+    const updatedEnvelope = req.body;
+    
+    const envelope = updateEnvelope(updatedEnvelope, req.envelopeId);
+    if (envelope) {
+        res.status(200).send(envelope);
     } else {
-        res.status(400).send('Request body did not contain any amount.')
+        res.status(400).send(`Either invalid id or invalid data types.`)
     }
 });
 
