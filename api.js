@@ -37,6 +37,17 @@ envelopesRouter.param('envelopeId', (req, res, next, id) => {
     
 });
 
+envelopesRouter.param('expenseAmount', (req, res, next, amount) => {
+    const expenseAmount = Number(amount);
+    if (Number.isNaN(expenseAmount)) {
+        // not a clean number. Probably lettes in amount...
+        res.status(404).send('Expense amount has to be a number.')
+    } else {
+        req.expenseAmount = expenseAmount;
+        next();
+    }
+})
+
 envelopesRouter.get('/', (req, res, next) => {
     res.status(200).send(getAllFromDB('envelopes'));
 })
@@ -58,6 +69,7 @@ envelopesRouter.get('/:envelopeId', (req, res, next) => {
     }
 });
 
+// PUT and GET route to add expense / withdraw from envelope balance.
 envelopesRouter.put('/:envelopeId', (req, res, next) => {
     const expenseAmount = Number(req.body.amount);
     if (Number.isInteger(expenseAmount)) {
@@ -71,6 +83,16 @@ envelopesRouter.put('/:envelopeId', (req, res, next) => {
         res.status(400).send('Request body did not contain any amount.')
     }
 });
+
+envelopesRouter.get('/:envelopeId/:expenseAmount', (req, res, next) => {
+    const envelope = addExpense(expenseAmount, req.envelopeId);
+    if (envelope) {
+        res.status(200).send(envelope);
+    } else {
+        res.status(400).send(`Could not find envelope with id ${req.envelopeId}`)
+    }
+    
+})
 
 apiRouter.use('/envelopes', envelopesRouter);
 
