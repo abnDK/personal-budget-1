@@ -14,7 +14,7 @@ const getAllFromDB = model => {
     }
 }
 
-getFromDBById = (model, id) => {
+const getFromDBById = (model, id) => {
     const data = envelopes.find(env => env.id === id);
     console.log(id);
     if (!data) {
@@ -50,6 +50,16 @@ const addToDB = (model, data) => {
 
 }
 
+const addExpense = (amount, envelopeId) => {
+    let envelope = getFromDBById('envelopes', envelopeId);
+    if (envelope) {
+        envelope.balance -= amount;
+        return envelope;
+    } else {
+        return null;
+    }
+}
+
 const setId = container => {
   
     let IDs = container.map(elem => Number(elem.id));
@@ -63,6 +73,7 @@ const setId = container => {
 module.exports = {
     getAllFromDB,
     addToDB,
-    getFromDBById
+    getFromDBById,
+    addExpense
 }
 
