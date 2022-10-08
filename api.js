@@ -1,5 +1,13 @@
 const express = require('express');
-const {getAllFromDB, addToDB, getFromDBById, addExpense, updateEnvelope, getEnvelopeByCategory} = require('./db');
+const {
+    getAllFromDB,
+    addToDB, 
+    getFromDBById,
+    addExpense, 
+    updateEnvelope, 
+    getEnvelopeByCategory, 
+    deleteEnvelope
+} = require('./db');
 const envelopes = require('./envelopes');
 const apiRouter = express.Router();
 
@@ -96,13 +104,21 @@ envelopesRouter.post('/:envelopeId', (req, res, next) => {
 })
 
 envelopesRouter.get('/:envelopeId/:expenseAmount', (req, res, next) => {
-    const envelope = addExpense(expenseAmount, req.envelopeId);
+    const envelope = addExpense(req.expenseAmount, req.envelopeId);
     if (envelope) {
         res.status(200).send(envelope);
     } else {
         res.status(400).send(`Could not find envelope with id ${req.envelopeId}`)
     }
     
+})
+
+
+// DELETE envelope route
+
+envelopesRouter.delete('/:envelopeId', (req, res, next) => {
+    const deletedEnvelope = deleteEnvelope(req.envelopeId);
+    res.status(200).send(deletedEnvelope);
 })
 
 apiRouter.use('/envelopes', envelopesRouter);

@@ -77,6 +77,17 @@ const updateEnvelope = (updatedEnvelope, envelopeId) => {
     }
 }
 
+const deleteEnvelope = envelopeId => {
+    const envelopes = getAllFromDB('envelopes');
+    const envIndex = envelopes.findIndex(env => env.id === envelopeId);
+    if (envIndex !== -1) {
+        let deletedEnvelope = envelopes.splice(envIndex, 1);
+        return deletedEnvelope;
+    } else {
+        console.log(`No envelope with id ${envelopeId}`)
+    }
+}
+
 const addExpense = (amount, envelopeId) => {
     let envelope = getFromDBById('envelopes', envelopeId);
     if (envelope) {
@@ -103,6 +114,7 @@ module.exports = {
     getFromDBById,
     addExpense,
     updateEnvelope,
-    getEnvelopeByCategory
+    getEnvelopeByCategory,
+    deleteEnvelope
 }
 
