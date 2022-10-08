@@ -24,6 +24,15 @@ const getFromDBById = (model, id) => {
     }
 }
 
+const getEnvelopeByCategory = category => {
+    const envelope = envelopes.find(env => env.category === category);
+    if (envelope) {
+        return envelope;
+    } else {
+        console.log(`Could not find envelope with category ${category}`)
+    }
+}
+
 const addToDB = (model, data) => {
     
     let container;
@@ -93,6 +102,7 @@ module.exports = {
     addToDB,
     getFromDBById,
     addExpense,
-    updateEnvelope
+    updateEnvelope,
+    getEnvelopeByCategory
 }
 

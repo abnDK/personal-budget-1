@@ -1,5 +1,6 @@
 const express = require('express');
-const {getAllFromDB, addToDB, getFromDBById, addExpense, updateEnvelope} = require('./db');
+const {getAllFromDB, addToDB, getFromDBById, addExpense, updateEnvelope, getEnvelopeByCategory} = require('./db');
+const envelopes = require('./envelopes');
 const apiRouter = express.Router();
 
 
@@ -7,7 +8,7 @@ const apiRouter = express.Router();
 // ENVELOPES routes
 const envelopesRouter = express.Router();
 
-const validateEnvelope = (req, res, next) => {
+const validateNewEnvelope = (req, res, next) => {
     console.log('validating envelope...')
     
     const knownCategories = getAllFromDB('envelopes').map(env => env.category);
@@ -52,7 +53,7 @@ envelopesRouter.get('/', (req, res, next) => {
     res.status(200).send(getAllFromDB('envelopes'));
 })
 
-envelopesRouter.post('/', validateEnvelope, (req, res, next) => {
+envelopesRouter.post('/', validateNewEnvelope, (req, res, next) => {
     const envelope = req.body;
     const addedEnvelope = addToDB('envelopes', envelope);
     res.status(201).send(addedEnvelope);
@@ -69,7 +70,7 @@ envelopesRouter.get('/:envelopeId', (req, res, next) => {
     }
 });
 
-// PUT and GET route to add expense / withdraw from envelope balance.
+// PUT for updating balance of envelope
 envelopesRouter.put('/:envelopeId', (req, res, next) => {
     const updatedEnvelope = req.body;
     
@@ -80,6 +81,19 @@ envelopesRouter.put('/:envelopeId', (req, res, next) => {
         res.status(400).send(`Either invalid id or invalid data types.`)
     }
 });
+
+// POST and GET route to add expense / withdraw from envelope balance.
+
+envelopesRouter.post('/:envelopeId', (req, res, next) => {
+    const expense = req.body.expense;
+    if (!Number.isNaN(Number(expense))) {
+        const updatedEnvelope = addExpense(expense, req.envelopeId);
+        res.status(200).send(updatedEnvelope);
+    } else {
+        res.status(400).send('Expense datatype has to be a number.')
+    }
+    
+})
 
 envelopesRouter.get('/:envelopeId/:expenseAmount', (req, res, next) => {
     const envelope = addExpense(expenseAmount, req.envelopeId);
