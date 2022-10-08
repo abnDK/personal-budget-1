@@ -16,7 +16,6 @@ const getAllFromDB = model => {
 
 const getFromDBById = (model, id) => {
     const data = envelopes.find(env => env.id === id);
-    console.log(id);
     if (!data) {
         return null;
     } else {

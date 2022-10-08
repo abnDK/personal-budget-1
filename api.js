@@ -68,6 +68,32 @@ envelopesRouter.post('/', validateNewEnvelope, (req, res, next) => {
 
 })
 
+
+// Transfer budget from one envelope to another
+envelopesRouter.post('/transfer/:from/:to', (req, res, next) => {
+    const transferRequest = req.body;
+    const fromEnvelopeId = Number(req.params.from);
+    const toEnvelopeId = Number(req.params.to);
+    const amount = transferRequest.amount;
+
+    const fromEnvelope = getFromDBById('envelopes', fromEnvelopeId);
+    const toEnvelope = getFromDBById('envelopes', toEnvelopeId);
+
+    if (fromEnvelope && toEnvelope) {
+
+        fromEnvelope.balance -= amount;
+        toEnvelope.balance += amount;
+    
+        updatedFromEnvelope = updateEnvelope(fromEnvelope, fromEnvelopeId);
+        updatedToEnvelope = updateEnvelope(toEnvelope, toEnvelopeId);
+    
+        res.status(200).send({updatedFromEnvelope, updatedToEnvelope})
+    } else {
+        res.status(400).send('something went wrong transfering funds from one envelope to another.')
+    }
+
+});
+
 envelopesRouter.get('/:envelopeId', (req, res, next) => {
     const envelope = getFromDBById('envelopes', req.envelopeId);
     if (envelope) {
@@ -120,6 +146,8 @@ envelopesRouter.delete('/:envelopeId', (req, res, next) => {
     const deletedEnvelope = deleteEnvelope(req.envelopeId);
     res.status(200).send(deletedEnvelope);
 })
+
+
 
 apiRouter.use('/envelopes', envelopesRouter);
 
