@@ -15,6 +15,7 @@ const getAllFromDB = model => {
 }
 
 const getFromDBById = (model, id) => {
+    console.log("getFromDBById: " + id);
     const data = envelopes.find(env => env.id === id);
     if (!data) {
         return null;
@@ -90,7 +91,11 @@ const deleteEnvelope = envelopeId => {
 const addExpense = (amount, envelopeId) => {
     let envelope = getFromDBById('envelopes', envelopeId);
     if (envelope) {
+        if (envelope.balance < amount) {
+            return null
+        }
         envelope.balance -= amount;
+         
         return envelope;
     } else {
         return null;

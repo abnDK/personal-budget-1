@@ -120,6 +120,12 @@ envelopesRouter.put('/:envelopeId', (req, res, next) => {
 
 envelopesRouter.post('/:envelopeId', (req, res, next) => {
     const expense = req.body.expense;
+    console.log(req.envelopeId);
+    const envelope = getFromDBById('envelopes', req.envelopeId);
+    console.log(envelope)
+    if (expense > envelope.balance) {
+        res.status(400).send('Expense larger than balance. Cannot withdraw.')
+    }
     if (!Number.isNaN(Number(expense))) {
         const updatedEnvelope = addExpense(expense, req.envelopeId);
         res.status(200).send(updatedEnvelope);
@@ -130,9 +136,13 @@ envelopesRouter.post('/:envelopeId', (req, res, next) => {
 })
 
 envelopesRouter.get('/:envelopeId/:expenseAmount', (req, res, next) => {
-    const envelope = addExpense(req.expenseAmount, req.envelopeId);
-    if (envelope) {
-        res.status(200).send(envelope);
+    const envelope = getFromDBById('envelopes', req.envelopeId);
+    if (req.expenseAmount > envelope.balance) {
+        res.status(400).send('Expense larger than balance. Cannot withdraw.');
+    }
+    const updatedEnvelope = addExpense(req.expenseAmount, req.envelopeId);
+    if (updatedEnvelope) {
+        res.status(200).send(updatedEnvelope);
     } else {
         res.status(400).send(`Could not find envelope with id ${req.envelopeId}`)
     }
