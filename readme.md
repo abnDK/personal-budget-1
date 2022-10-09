@@ -8,11 +8,17 @@ Set up envelopes with categories and balances and add expenses in order to budge
 ### Routes
 
 GET    .../api/envelopes/ - Gets all envelopes.
+
 POST   .../api/envelopes/transfer/:from/:to - Post amount to transfer from one envelope to another (by id).
+
 GET    .../api/envelopes/:envelopeId - Get specific envelope.
+
 PUT    .../api/envelopes/:envelopeId - Update specific envelope by supplying expense.
+
 POST   .../api/envelopes/:envelopeId - Set new balance for specific envelope.
+
 GET    .../api/envelopes/:envelopeId/:expenseAmount - Withdraw expense from specific envelope.
+
 DELETE .../api/envelope/:envelopeId - Delete specific envelope.
 
 
